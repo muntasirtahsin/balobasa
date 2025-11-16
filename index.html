@@ -114,29 +114,51 @@
     <div class="message" id="message"></div>
 
     <script>
-        const noButton = document.getElementById('no');
-        const yesButton = document.getElementById('yes');
-        const message = document.getElementById('message');
+    const noButton = document.getElementById('no');
+    const yesButton = document.getElementById('yes');
+    const message = document.getElementById('message');
 
-        // On hover, change text and move to a random position
+    // Detect if it's a touch device
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // Make the movement smooth
+    noButton.style.transition = 'all 0.25s ease';
+
+    function moveNoButton() {
+        const btnWidth = noButton.offsetWidth;
+        const btnHeight = noButton.offsetHeight;
+        const maxX = window.innerWidth - btnWidth - 20; // 20px margin
+        const maxY = window.innerHeight - btnHeight - 120; // avoid bottom overlap
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noButton.style.position = 'absolute';
+        noButton.style.left = `${randomX}px`;
+        noButton.style.top = `${randomY}px`;
+    }
+
+    if (isTouchDevice) {
+        // On phones/tablets
+        noButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            noButton.textContent = 'Are you sure?';
+            moveNoButton();
+        }, { passive: true });
+    } else {
+        // On desktop
         noButton.addEventListener('mouseenter', () => {
             noButton.textContent = 'Are you sure?';
-            // Move to a random position
-            const randomX = Math.random() * (window.innerWidth - 100);
-            const randomY = Math.random() * (window.innerHeight - 100);
-            noButton.style.position = 'absolute';
-            noButton.style.left = randomX + 'px';
-            noButton.style.top = randomY + 'px';
+            moveNoButton();
         });
+    }
 
-        // On mouse leave, keep the new position and text
-
-        yesButton.addEventListener('click', () => {
-            message.style.display = 'block';
-            message.innerHTML = 'Yay! I love you! 💍❤️';
-            // Hide buttons after yes
-            document.querySelector('.buttons').style.display = 'none';
-        });
+    // Yes button click
+    yesButton.addEventListener('click', () => {
+        message.style.display = 'block';
+        message.innerHTML = 'Yay! I love you! 💍❤️';
+        document.querySelector('.buttons').style.display = 'none';
+    });
     </script>
 </body>
 </html>
