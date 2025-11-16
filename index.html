@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Marry Me?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            background-size: cover;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Floating hearts */
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: #ff6b9d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .heart:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .heart:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .heart:nth-child(3) { top: 40%; left: 20%; animation-delay: 2s; }
+        .heart:nth-child(4) { top: 60%; right: 10%; animation-delay: 3s; }
+        .heart:nth-child(5) { top: 80%; left: 15%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .photo {
+            width: 200px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        #yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #yes:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        #no {
+            background-color: #f44336;
+            color: white;
+            position: relative;
+        }
+
+        .message {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            display: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="heart">❤️</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💗</div>
+    <div class="heart">💓</div>
+
+    <img src="a.jpg" alt="Proposal Photo" class="photo">
+
+    <h1>Will You <span style="color: #e75480;">Marry</span> Me?</h1>
+
+    <div class="buttons">
+        <button id="yes">Yes</button>
+        <button id="no">No</button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        const noButton = document.getElementById('no');
+        const yesButton = document.getElementById('yes');
+        const message = document.getElementById('message');
+
+        // On hover, change text and move to a random position
+        noButton.addEventListener('mouseenter', () => {
+            noButton.textContent = 'Are you sure?';
+            // Move to a random position
+            const randomX = Math.random() * (window.innerWidth - 100);
+            const randomY = Math.random() * (window.innerHeight - 100);
+            noButton.style.position = 'absolute';
+            noButton.style.left = randomX + 'px';
+            noButton.style.top = randomY + 'px';
+        });
+
+        // On mouse leave, keep the new position and text
+
+        yesButton.addEventListener('click', () => {
+            message.style.display = 'block';
+            message.innerHTML = 'Yay! I love you! 💍❤️';
+            // Hide buttons after yes
+            document.querySelector('.buttons').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
