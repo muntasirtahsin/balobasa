@@ -19,9 +19,9 @@
             color: #fff;
             text-align: center;
             overflow: hidden;
+            touch-action: manipulation; /* Prevents double-tap zoom on mobile */
         }
 
-        /* Floating hearts */
         .heart {
             position: absolute;
             font-size: 2rem;
@@ -49,7 +49,7 @@
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 2rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
@@ -69,6 +69,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 10;
         }
 
         #yes {
@@ -85,13 +86,18 @@
             background-color: #f44336;
             color: white;
             position: relative;
+            transition: all 0.2s ease-out; /* Makes the slide look smooth */
         }
 
         .message {
             margin-top: 2rem;
-            font-size: 1.2rem;
+            font-size: 2rem;
             display: none;
-            color: black;
+            color: #d63384;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 15px;
         }
     </style>
 </head>
@@ -114,52 +120,56 @@
     <div class="message" id="message"></div>
 
     <script>
-    const noButton = document.getElementById('no');
-    const yesButton = document.getElementById('yes');
-    const message = document.getElementById('message');
+        const noButton = document.getElementById('no');
+        const yesButton = document.getElementById('yes');
+        const message = document.getElementById('message');
 
-    // Detect if it's a touch device
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        /**
+         * Core logic: Moves the button to a random spot
+         * Fixed positioning ensures it stays within the visible screen.
+         */
+        function moveNoButton(event) {
+            if (event) event.preventDefault(); // Stop mobile from clicking
 
-    // Make the movement smooth
-    noButton.style.transition = 'all 0.25s ease';
+            const btnWidth = noButton.offsetWidth;
+            const btnHeight = noButton.offsetHeight;
 
-    function moveNoButton() {
-        const btnWidth = noButton.offsetWidth;
-        const btnHeight = noButton.offsetHeight;
-        const maxX = window.innerWidth - btnWidth - 20; // 20px margin
-        const maxY = window.innerHeight - btnHeight - 120; // avoid bottom overlap
+            // Safe zones to keep the button on screen
+            const maxX = window.innerWidth - btnWidth - 30;
+            const maxY = window.innerHeight - btnHeight - 30;
 
-        const randomX = Math.random() * maxX;
-        const randomY = Math.random() * maxY;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
 
-        noButton.style.position = 'absolute';
-        noButton.style.left = `${randomX}px`;
-        noButton.style.top = `${randomY}px`;
-    }
-
-    if (isTouchDevice) {
-        // On phones/tablets
-        noButton.addEventListener('click', (e) => {
-            e.preventDefault();
+            noButton.style.position = 'fixed';
+            noButton.style.left = `${randomX}px`;
+            noButton.style.top = `${randomY}px`;
+            
             noButton.textContent = 'Are you sure?';
-            moveNoButton();
-        }, { passive: true });
-    } else {
-        // On desktop
-        noButton.addEventListener('mouseenter', () => {
-            noButton.textContent = 'Are you sure?';
+        }
+
+        // 1. FOR MOBILE: Triggers the moment a finger touches the button
+        noButton.addEventListener('touchstart', (e) => {
+            moveNoButton(e);
+        }, { passive: false });
+
+        // 2. FOR DESKTOP: Triggers when the mouse gets near
+        noButton.addEventListener('mouseover', () => {
             moveNoButton();
         });
-    }
 
-    // Yes button click
-    yesButton.addEventListener('click', () => {
-        message.style.display = 'block';
-        message.innerHTML = 'Yay! I love you! 💍❤️';
-        document.querySelector('.buttons').style.display = 'none';
-    });
+        // 3. THE "YES" ACTION
+        yesButton.addEventListener('click', () => {
+            message.style.display = 'block';
+            message.innerHTML = 'Yay! I love you! 💍❤️';
+            
+            // Clean up the UI
+            document.querySelector('.buttons').style.visibility = 'hidden';
+            noButton.style.display = 'none';
+            
+            // Optional: Add a little celebration effect
+            document.body.style.background = "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)";
+        });
     </script>
 </body>
 </html>
-
